@@ -48,16 +48,20 @@ def get_body_from_email(email_message):
 
                 body = part.get_payload(decode = True)
 
-            # Some error handeling
-            for x in determine_charsets(email_message):
-                try:
-                    body = body.decode(x)
-                except UnicodeDecodeError:
-                    error_handeling('UnicodeDecodeError encountered', email_message, x)
-                except AttributeError:
-                    error_handeling('AttributeError encountered',error_message, x)
+    elif email_message.get_content_type() == 'text/plain':
 
-            return body
+        body = email_message.get_payload(decode = True)
+
+    # Some error handeling
+    for x in determine_charsets(email_message):
+        try:
+            body = body.decode(x)
+        except UnicodeDecodeError:
+            error_handeling('UnicodeDecodeError encountered', email_message, x)
+        except AttributeError:
+            error_handeling('AttributeError encountered',error_message, x)
+
+    return body
 
 # Create csv writer
 csv_writer = csv.writer(open(csv_file, 'wb'))
@@ -70,6 +74,6 @@ for email in mailbox.mbox(mbox_file):
 
     body = get_body_from_email(email)
 
-    print body
+    #print body
 
     csv_writer.writerow([email["date"], email["subject"], email["from"], email["to"], unicode(body).encode('utf-8')])
