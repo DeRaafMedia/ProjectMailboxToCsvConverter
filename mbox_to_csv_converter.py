@@ -34,7 +34,7 @@ def get_body_from_email(email_message):
     if email_message.is_multipart():
         for part in email_message.walk():
 
-            # If this is a multipart, walk through the su_part
+            # If this is a multipart, walk through the sub_part
             if part.is_multipart():
 
                 for sub_part in part.walk():
@@ -48,6 +48,7 @@ def get_body_from_email(email_message):
 
                 body = part.get_payload(decode = True)
 
+    # If the mail isn't seen as multipart
     elif email_message.get_content_type() == 'text/plain':
 
         body = email_message.get_payload(decode = True)
